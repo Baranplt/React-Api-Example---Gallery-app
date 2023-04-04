@@ -1,23 +1,29 @@
-import logo from './logo.svg';
-import './App.css';
+import SearchHeader from "./components/SearchHeader";
+import ImageList from "./components/imageList";
 
+import searchImages from "./api";
+import { useState } from "react";
 function App() {
+
+  const [isEmpty, setIsEmpty] = useState(false)
+  const [images, setImages] = useState([])
+  const handleSubmit = async (ter) => {
+    setIsEmpty(false)
+    setImages([])
+    const result = await searchImages(ter)
+    if (result.data.results.length == 0) {
+      return setIsEmpty(true)
+
+    }
+    setImages(result.data.results)
+  }
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="App m-2 w-full">
+      <SearchHeader search={handleSubmit} />
+      {
+        isEmpty && <p> Aradıgınız veri bulunamadı</p>
+      }
+      <ImageList imagesPlaceholder={images} />
     </div>
   );
 }
